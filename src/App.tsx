@@ -11,6 +11,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Onboarding open={!apiKey} />
+      <h1 className="p-8 text-3xl text-white font-mono">Morphological Box - AI Art</h1>
       <div className="container mx-auto p-4">
         <Table />
       </div>

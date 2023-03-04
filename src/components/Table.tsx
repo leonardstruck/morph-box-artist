@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { CheckIcon, XMarkIcon, PlusCircleIcon } from "@heroicons/react/24/solid"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 import useStore from "../store";
 
@@ -8,9 +9,11 @@ import { v4 as uuid } from "uuid";
 
 const Table = () => {
     const { parameters } = useStore();
+
+    const [parent] = useAutoAnimate();
     return (
         <div className="text-white">
-            <div className="grid grid-cols-6 gap-2">
+            <div className="grid grid-cols-6 gap-2" ref={parent}>
                 <Box primary>Parameters</Box>
                 <Box primary colSpan={4}>Characteristics</Box>
                 {parameters.map((parameter, index) => (
