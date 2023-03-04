@@ -31,7 +31,7 @@ const Onboarding = ({ open }: OnboardingProps) => {
     });
 
     return (
-        <Transition.Root show={open} as={Fragment}>
+        <Transition.Root show={open} as={Fragment} appear={true}>
             <Dialog as="div" className="relative z-10" onClose={() => { }}>
                 <Transition.Child
                     as={Fragment}
@@ -42,7 +42,7 @@ const Onboarding = ({ open }: OnboardingProps) => {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    <div className="fixed inset-0 backdrop-blur-3xl transition-opacity" />
                 </Transition.Child>
 
                 <div className="fixed inset-0 z-10 overflow-y-auto">
