@@ -16,7 +16,7 @@ const Table = () => {
 
 const Box = ({ children, colSpan }: { children: React.ReactNode, colSpan?: 2 | 4 }) => {
     return (
-        <div className={clsx(colSpan ? `col-span-${colSpan}` : "col-span-2", "h-12 border rounded flex justify-center items-center shadow-md shadow-gray-700 font-bold text-xl font-mono cursor-default")}>
+        <div className={clsx(colSpan == 4 && "col-span-4", colSpan == 2 || !colSpan && "col-span-2", "h-12 border rounded flex justify-center items-center shadow-md shadow-gray-700 font-bold text-xl font-mono cursor-default")}>
             {children}
         </div>
     )
