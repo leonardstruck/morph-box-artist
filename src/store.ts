@@ -37,6 +37,9 @@ export interface Store {
 
     characteristics: Characteristic[];
     setCharacteristics: (characteristics: Characteristic[]) => void;
+    selectCharacteristic: (parameterId: string, characteristicId: string) => void;
+    clearSelectedCharacteristics: () => void;
+    clearSelectedCharacteristic: (parameterId: string) => void;
 
     addParameter: (parameter: Parameter) => void;
     addCharacteristic: (characteristic: Characteristic) => void;
@@ -53,6 +56,9 @@ export interface Store {
     addCombination: (combination: Combination) => void;
     removeCombination: (combinationId: string) => void;
     generateCombination: () => void;
+
+    isValidSelection: () => boolean;
+    saveSelection: () => void;
 }
 
 const useStore = create(
@@ -182,6 +188,63 @@ const useStore = create(
                 // add the combination to the list
                 combinations.push(combination);
                 set({ combinations });
+            },
+
+            selectCharacteristic: (parameterId: string, characteristicId: string) => {
+                const parameters = get().parameters;
+                const index = parameters.findIndex((parameter) => parameter.id === parameterId);
+                if (index !== -1) {
+                    parameters[index].selectedCharacteristicId = characteristicId;
+                    set({ parameters });
+                }
+            },
+
+            clearSelectedCharacteristics: () => {
+                const parameters = get().parameters;
+                parameters.forEach((parameter) => (parameter.selectedCharacteristicId = undefined));
+                set({ parameters });
+            },
+
+            clearSelectedCharacteristic: (parameterId: string) => {
+                const parameters = get().parameters;
+                const index = parameters.findIndex((parameter) => parameter.id === parameterId);
+                if (index !== -1) {
+                    parameters[index].selectedCharacteristicId = undefined;
+                    set({ parameters });
+                }
+            },
+
+            isValidSelection: () => {
+                const parameters = get().parameters;
+                return parameters.every((parameter) => parameter.selectedCharacteristicId !== undefined);
+            },
+
+            saveSelection: () => {
+                const parameters = get().parameters;
+                const characteristics = get().characteristics;
+
+                // get selected characteristics
+                const selectedCharacteristics = parameters
+                    .map((parameter) => {
+                        const characteristic = characteristics.find((characteristic) => characteristic.id === parameter.selectedCharacteristicId);
+                        return characteristic;
+                    })
+                    .filter((characteristic) => characteristic !== undefined) as Characteristic[];
+
+                // generate a combination
+                const combination: Combination = {
+                    id: uuid(),
+                    characteristics: selectedCharacteristics,
+                };
+
+                // add the combination to the list
+                const combinations = get().combinations;
+                combinations.push(combination);
+                set({ combinations });
+
+                // clear selected characteristics
+                parameters.forEach((parameter) => (parameter.selectedCharacteristicId = undefined));
+                set({ parameters });
             }
         }),
         {

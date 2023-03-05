@@ -46,6 +46,7 @@ const Table = () => {
                 {editMode && <AddParameter />}
                 {!editMode && <GenerateCombination />}
                 <EditMode />
+                <SaveSelection />
             </div>
         </div>
     )
@@ -66,6 +67,24 @@ const EditMode = () => {
             onClick={() => setEditMode(!editMode)}
             className={clsx("col-span-2 h-12 border rounded flex justify-center items-center shadow-md shadow-gray-700 font-bold text-sm font-mono", editMode ? "bg-emerald-900 hover:bg-green-900" : "bg-blue-900 hover:bg-blue-700", "cursor-pointer")}>
             <span className="flex gap-2 items-center"><div className="w-6 h-6"><PencilIcon /></div>{editMode ? "Exit" : "Enter"} Edit Mode</span>
+        </div>
+    );
+}
+
+const SaveSelection = () => {
+    const { saveSelection, isValidSelection } = useStore();
+    const valid = isValidSelection();
+    return (
+        <div
+            onClick={() => {
+                if (valid) {
+                    saveSelection();
+                } else {
+                    alert("Please select at least one characteristic for each parameter");
+                }
+            }}
+            className={clsx(!valid ? "opacity-50 cursor-not-allowed" : "hover:bg-green-900 cursor-pointer", "col-span-2 h-12 border rounded flex justify-center items-center shadow-md shadow-gray-700 font-bold text-sm font-mono bg-emerald-900 ")}>
+            <span className="flex gap-2 items-center"><div className="w-6 h-6"><CheckIcon /></div>Save Selection</span>
         </div>
     );
 }
@@ -148,9 +167,18 @@ const AddParameter = () => {
 }
 
 const Characteristic = ({ characteristic }: { characteristic: Characteristic }) => {
-    const { removeCharacteristic, editMode } = useStore();
+    const { removeCharacteristic, editMode, selectCharacteristic, getParameterById, clearSelectedCharacteristic } = useStore();
+    const parameter = getParameterById(characteristic.parameterId);
     return (
-        <div className="p-2 h-12 flex items-center border rounded gap-2">
+        <div className={clsx("p-2 h-12 flex items-center border rounded gap-2", !editMode && "cursor-pointer hover:bg-blue-900", parameter?.selectedCharacteristicId == characteristic.id && !editMode && "bg-blue-700 scale-105")} onClick={() => {
+            if (!editMode) {
+                if (parameter?.selectedCharacteristicId == characteristic.id) {
+                    clearSelectedCharacteristic(characteristic.parameterId);
+                } else {
+                    selectCharacteristic(characteristic.parameterId, characteristic.id);
+                }
+            }
+        }}>
             {characteristic.name}
             {editMode && <TrashIcon className="w-4 cursor-pointer" onClick={() => removeCharacteristic(characteristic.id)} />}
         </div>
