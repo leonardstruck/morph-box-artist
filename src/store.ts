@@ -59,6 +59,8 @@ export interface Store {
 
     isValidSelection: () => boolean;
     saveSelection: () => void;
+
+    deleteStore: () => void;
 }
 
 const useStore = create(
@@ -248,6 +250,10 @@ const useStore = create(
                 // clear selected characteristics
                 parameters.forEach((parameter) => (parameter.selectedCharacteristicId = undefined));
                 set({ parameters });
+            },
+            deleteStore: () => {
+                localStorage.removeItem("store");
+                window.location.reload();
             }
         }),
         {
