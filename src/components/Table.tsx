@@ -46,7 +46,7 @@ const Table = () => {
                 {editMode && <AddParameter />}
                 {!editMode && <GenerateCombination />}
                 <EditMode />
-                <SaveSelection />
+                {!editMode && <SaveSelection />}
             </div>
         </div>
     )
