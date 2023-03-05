@@ -11,6 +11,7 @@ const Table = () => {
     const { parameters, getCharacteristigByParameterId } = useStore();
 
     const [parent] = useAutoAnimate();
+
     return (
         <div className="text-white">
             <div className="grid grid-cols-6 gap-2" ref={parent}>
@@ -22,7 +23,7 @@ const Table = () => {
                         <div key={parameter.id} className="grid grid-cols-6 gap-2 col-span-6">
                             <Box>{parameter.name}</Box>
                             <Box colSpan={4}>
-                                <div className="flex flex-wrap items-center gap-2">
+                                <div className="flex flex-wrap items-center gap-2 w-full" ref={parent}>
                                     {
                                         characteristics.map((characteristic, index) => {
                                             return (
@@ -31,7 +32,6 @@ const Table = () => {
                                         })
                                     }
                                     <AddCharacteristic parameterId={parameter.id} />
-
                                 </div>
                             </Box>
                         </div>
