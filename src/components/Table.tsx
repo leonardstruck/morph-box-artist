@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-import { CheckIcon, XMarkIcon, PlusCircleIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/solid"
+import { CheckIcon, XMarkIcon, PlusCircleIcon, TrashIcon, PencilIcon, Cog6ToothIcon } from "@heroicons/react/24/solid"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 import useStore, { Characteristic } from "../store";
@@ -45,12 +45,13 @@ const Table = () => {
                 )}
                 {editMode && <AddParameter />}
                 <EditMode />
+                {!editMode && <GenerateCombination />}
             </div>
         </div>
     )
 }
 
-const Box = ({ children, colSpan, primary }: { children: React.ReactNode, colSpan?: 2 | 4, primary?: boolean }) => {
+export const Box = ({ children, colSpan, primary }: { children: React.ReactNode, colSpan?: 2 | 4, primary?: boolean }) => {
     return (
         <div className={clsx(colSpan == 4 && "col-span-4", colSpan == 2 || !colSpan && "col-span-2", !primary ? "bg-gray-800 text-sm" : "text-xl", "min-h-12 border rounded flex items-center shadow-md shadow-gray-700 font-bold font-mono cursor-default p-4 max-h-fit")}>
             {children}
@@ -65,6 +66,17 @@ const EditMode = () => {
             onClick={() => setEditMode(!editMode)}
             className={clsx("col-span-2 h-12 border rounded flex justify-center items-center shadow-md shadow-gray-700 font-bold text-sm font-mono", editMode ? "bg-emerald-900 hover:bg-green-900" : "bg-blue-900 hover:bg-blue-700", "cursor-pointer")}>
             <span className="flex gap-2 items-center"><div className="w-6 h-6"><PencilIcon /></div>{editMode ? "Exit" : "Enter"} Edit Mode</span>
+        </div>
+    );
+}
+
+const GenerateCombination = () => {
+    const { generateCombination } = useStore();
+    return (
+        <div
+            onClick={() => generateCombination()}
+            className={clsx("col-span-2 h-12 border rounded flex justify-center items-center shadow-md shadow-gray-700 font-bold text-sm font-mon bg-blue-900 hover:bg-blue-700 cursor-pointer")}>
+            <span className="flex gap-2 items-center"><div className="w-6 h-6"><Cog6ToothIcon /></div>Generate Combination</span>
         </div>
     );
 }

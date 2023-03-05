@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+import { v4 as uuid } from "uuid";
+
 
 export type Parameter = {
     id: string;
@@ -13,6 +15,12 @@ export type Characteristic = {
     parameterId: string;
     name: string;
 };
+
+export type Combination = {
+    id: string;
+    characteristics: Characteristic[];
+    generatedUrl?: string;
+}
 
 export interface Store {
     apiKey?: string;
@@ -34,6 +42,11 @@ export interface Store {
 
     editMode: boolean;
     setEditMode: (editMode: boolean) => void;
+
+    combinations: Combination[];
+    addCombination: (combination: Combination) => void;
+    removeCombination: (combinationId: string) => void;
+    generateCombination: () => void;
 }
 
 const useStore = create(
@@ -97,6 +110,47 @@ const useStore = create(
 
             editMode: false,
             setEditMode: (editMode: boolean) => set({ editMode }),
+
+            combinations: [],
+            addCombination: (combination: Combination) => {
+                const combinations = get().combinations;
+                combinations.push(combination);
+                set({ combinations });
+            },
+
+            removeCombination: (combinationId: string) => {
+                const combinations = get().combinations;
+                const index = combinations.findIndex((combination) => combination.id === combinationId);
+                if (index !== -1) {
+                    combinations.splice(index, 1);
+                    set({ combinations });
+                }
+            },
+
+            generateCombination: () => {
+                const combinations = get().combinations;
+                const parameters = get().parameters;
+                const characteristics = get().characteristics;
+
+                // get a random characteristic from each parameter
+                const randomCharacteristics = parameters.map((parameter) => {
+                    const parameterCharacteristics = characteristics.filter((characteristic) => characteristic.parameterId === parameter.id);
+                    const randomIndex = Math.floor(Math.random() * parameterCharacteristics.length);
+                    return parameterCharacteristics[randomIndex];
+                });
+
+                if (randomCharacteristics.length === 0) return;
+
+                // generate a combination
+                const combination: Combination = {
+                    id: uuid(),
+                    characteristics: randomCharacteristics,
+                };
+
+                // add the combination to the list
+                combinations.push(combination);
+                set({ combinations });
+            }
         }),
         {
             name: "store",
