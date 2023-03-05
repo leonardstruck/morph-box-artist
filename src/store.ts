@@ -216,6 +216,9 @@ const useStore = create(
 
             isValidSelection: () => {
                 const parameters = get().parameters;
+                if (parameters.length === 0) {
+                    return false;
+                }
                 return parameters.every((parameter) => parameter.selectedCharacteristicId !== undefined);
             },
 
