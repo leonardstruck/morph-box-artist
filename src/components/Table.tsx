@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-import { CheckIcon, XMarkIcon, PlusCircleIcon } from "@heroicons/react/24/solid"
+import { CheckIcon, XMarkIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 import useStore, { Characteristic } from "../store";
@@ -119,9 +119,11 @@ const AddParameter = () => {
 }
 
 const Characteristic = ({ characteristic }: { characteristic: Characteristic }) => {
+    const { removeCharacteristic } = useStore();
     return (
-        <div className="p-2 h-12 flex items-center border rounded">
+        <div className="p-2 h-12 flex items-center border rounded gap-2">
             {characteristic.name}
+            <TrashIcon className="w-4 cursor-pointer" onClick={() => removeCharacteristic(characteristic.id)} />
         </div>
     )
 }
@@ -159,6 +161,12 @@ const AddCharacteristic = ({ parameterId }: { parameterId: string }) => {
             window.removeEventListener("keydown", handleKeyDown);
         }
     }, [handleAdd, setName, setIsActive]);
+
+    useEffect(() => {
+        if (isActive) {
+            characteristicInput.current?.focus();
+        }
+    }, [isActive]);
 
     if (!isActive) {
         return (
