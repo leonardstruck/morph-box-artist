@@ -31,6 +31,9 @@ export interface Store {
     removeCharacteristic: (characteristicId: string) => void;
 
     getCharacteristigByParameterId: (parameterId: string) => Characteristic[];
+
+    editMode: boolean;
+    setEditMode: (editMode: boolean) => void;
 }
 
 const useStore = create(
@@ -90,7 +93,10 @@ const useStore = create(
             getCharacteristigByParameterId: (parameterId: string) => {
                 const characteristics = get().characteristics;
                 return characteristics.filter((characteristic) => characteristic.parameterId === parameterId);
-            }
+            },
+
+            editMode: false,
+            setEditMode: (editMode: boolean) => set({ editMode }),
         }),
         {
             name: "store",

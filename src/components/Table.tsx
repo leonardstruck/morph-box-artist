@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-import { CheckIcon, XMarkIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid"
+import { CheckIcon, XMarkIcon, PlusCircleIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/solid"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 import useStore, { Characteristic } from "../store";
@@ -8,7 +8,7 @@ import useStore, { Characteristic } from "../store";
 import { v4 as uuid } from "uuid";
 
 const Table = () => {
-    const { parameters, getCharacteristigByParameterId, removeParameter } = useStore();
+    const { parameters, getCharacteristigByParameterId, removeParameter, editMode } = useStore();
 
     const [parent] = useAutoAnimate();
 
@@ -24,7 +24,7 @@ const Table = () => {
                             <Box>
                                 <div className="flex gap-2">
                                     {parameter.name}
-                                    <TrashIcon className="w-4 cursor-pointer" onClick={() => removeParameter(parameter.id)} />
+                                    {editMode && <TrashIcon className="w-4 cursor-pointer" onClick={() => removeParameter(parameter.id)} />}
                                 </div>
                             </Box>
                             <Box colSpan={4}>
@@ -36,14 +36,15 @@ const Table = () => {
                                             )
                                         })
                                     }
-                                    <AddCharacteristic parameterId={parameter.id} />
+                                    {editMode && <AddCharacteristic parameterId={parameter.id} />}
                                 </div>
                             </Box>
                         </div>
                     )
                 }
                 )}
-                <AddParameter />
+                {editMode && <AddParameter />}
+                <EditMode />
             </div>
         </div>
     )
@@ -55,6 +56,17 @@ const Box = ({ children, colSpan, primary }: { children: React.ReactNode, colSpa
             {children}
         </div>
     )
+}
+
+const EditMode = () => {
+    const { editMode, setEditMode } = useStore();
+    return (
+        <div
+            onClick={() => setEditMode(!editMode)}
+            className={clsx("col-span-2 h-12 border rounded flex justify-center items-center shadow-md shadow-gray-700 font-bold text-sm font-mono", editMode ? "bg-emerald-900 hover:bg-green-900" : "bg-blue-900 hover:bg-blue-700", "cursor-pointer")}>
+            <span className="flex gap-2 items-center"><div className="w-6 h-6"><PencilIcon /></div>{editMode ? "Exit" : "Enter"} Edit Mode</span>
+        </div>
+    );
 }
 
 const AddParameter = () => {
@@ -124,11 +136,11 @@ const AddParameter = () => {
 }
 
 const Characteristic = ({ characteristic }: { characteristic: Characteristic }) => {
-    const { removeCharacteristic } = useStore();
+    const { removeCharacteristic, editMode } = useStore();
     return (
         <div className="p-2 h-12 flex items-center border rounded gap-2">
             {characteristic.name}
-            <TrashIcon className="w-4 cursor-pointer" onClick={() => removeCharacteristic(characteristic.id)} />
+            {editMode && <TrashIcon className="w-4 cursor-pointer" onClick={() => removeCharacteristic(characteristic.id)} />}
         </div>
     )
 }
