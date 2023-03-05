@@ -8,7 +8,7 @@ import useStore, { Characteristic } from "../store";
 import { v4 as uuid } from "uuid";
 
 const Table = () => {
-    const { parameters, getCharacteristigByParameterId } = useStore();
+    const { parameters, getCharacteristigByParameterId, removeParameter } = useStore();
 
     const [parent] = useAutoAnimate();
 
@@ -21,7 +21,12 @@ const Table = () => {
                     const characteristics = getCharacteristigByParameterId(parameter.id);
                     return (
                         <div key={parameter.id} className="grid grid-cols-6 gap-2 col-span-6">
-                            <Box>{parameter.name}</Box>
+                            <Box>
+                                <div className="flex gap-2">
+                                    {parameter.name}
+                                    <TrashIcon className="w-4 cursor-pointer" onClick={() => removeParameter(parameter.id)} />
+                                </div>
+                            </Box>
                             <Box colSpan={4}>
                                 <div className="flex flex-wrap items-center gap-2 w-full" ref={parent}>
                                     {
@@ -46,7 +51,7 @@ const Table = () => {
 
 const Box = ({ children, colSpan, primary }: { children: React.ReactNode, colSpan?: 2 | 4, primary?: boolean }) => {
     return (
-        <div className={clsx(colSpan == 4 && "col-span-4", colSpan == 2 || !colSpan && "col-span-2", !primary ? "bg-gray-800 text-sm" : "text-xl", "min-h-12 border rounded flex items-center shadow-md shadow-gray-700 font-bold font-mono cursor-default p-4")}>
+        <div className={clsx(colSpan == 4 && "col-span-4", colSpan == 2 || !colSpan && "col-span-2", !primary ? "bg-gray-800 text-sm" : "text-xl", "min-h-12 border rounded flex items-center shadow-md shadow-gray-700 font-bold font-mono cursor-default p-4 max-h-fit")}>
             {children}
         </div>
     )
