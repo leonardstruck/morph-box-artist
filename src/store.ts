@@ -26,6 +26,11 @@ export interface Store {
     apiKey?: string;
     setApiKey: (apiKey: string) => void;
 
+    combinationOnDisplay?: Combination;
+    setCombinationOnDisplay: (combination: Combination) => void;
+    removeCombinationOnDisplay: () => void;
+    updateImageUrl: (combinationId: string, imageUrl: string) => void;
+
     parameters: Parameter[];
     setParameters: (parameters: Parameter[]) => void;
     getParameterById: (parameterId: string) => Parameter | undefined;
@@ -55,6 +60,28 @@ const useStore = create(
         (set, get) => ({
             apiKey: undefined,
             setApiKey: (apiKey: string) => set({ apiKey }),
+
+            combinationOnDisplay: undefined,
+            setCombinationOnDisplay: (combination: Combination) => set({ combinationOnDisplay: combination }),
+            removeCombinationOnDisplay: () => set({ combinationOnDisplay: undefined }),
+            updateImageUrl: (combinationId: string, imageUrl: string) => {
+                // update image url in combination
+                const combinations = get().combinations;
+                // find index of combination
+                const index = combinations.findIndex((combination) => combination.id === combinationId);
+                if (index !== -1) {
+                    // update image url
+                    combinations[index].generatedUrl = imageUrl;
+                    set({ combinations });
+                }
+
+                // update image url in combination on display
+                const combinationOnDisplay = get().combinationOnDisplay;
+                if (combinationOnDisplay?.id === combinationId) {
+                    combinationOnDisplay.generatedUrl = imageUrl;
+                    set({ combinationOnDisplay });
+                }
+            },
 
             parameters: [],
             setParameters: (parameters: Parameter[]) => set({ parameters }),
