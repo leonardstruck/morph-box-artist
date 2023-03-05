@@ -37,9 +37,11 @@ const Combinations = () => {
 }
 
 const Characteristic = ({ characteristic }: { characteristic: CharacteristicT }) => {
+    const { getParameterById } = useStore();
+    const parameter = getParameterById(characteristic.parameterId);
     return (
         <div className="flex items-center gap-2 text-white border p-2 rounded">
-            <div className="text-sm">{characteristic.name}</div>
+            <div className="text-sm"><span className="italic font-bold">{parameter?.name}:</span> {characteristic.name}</div>
         </div>
     )
 }

@@ -28,6 +28,7 @@ export interface Store {
 
     parameters: Parameter[];
     setParameters: (parameters: Parameter[]) => void;
+    getParameterById: (parameterId: string) => Parameter | undefined;
 
     characteristics: Characteristic[];
     setCharacteristics: (characteristics: Characteristic[]) => void;
@@ -57,6 +58,10 @@ const useStore = create(
 
             parameters: [],
             setParameters: (parameters: Parameter[]) => set({ parameters }),
+            getParameterById: (parameterId: string) => {
+                const parameters = get().parameters;
+                return parameters.find((parameter) => parameter.id === parameterId);
+            },
 
             characteristics: [],
             setCharacteristics: (characteristics: Characteristic[]) => set({ characteristics }),
