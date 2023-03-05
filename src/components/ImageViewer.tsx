@@ -28,7 +28,7 @@ const ImageViewer = () => {
                 })
             }).then((res) => {
                 if (res.status !== 200) {
-                    throw new Error(`Error while generating image: ${res.statusText} (${res.status})`, res);
+                    throw new Error(`Error while generating image: ${res.statusText} (${res.status})`);
                 }
                 return res.json();
             })
