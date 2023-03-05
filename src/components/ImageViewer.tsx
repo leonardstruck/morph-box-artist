@@ -7,10 +7,10 @@ const ImageViewer = () => {
     const { combinationOnDisplay, removeCombinationOnDisplay, apiKey, getParameterById, updateImageUrl } = useStore();
     const open = !!combinationOnDisplay;
 
-    const prompt = combinationOnDisplay?.characteristics.map((c) => {
+    const prompt = "Draw an artwork with these parameters: " + combinationOnDisplay?.characteristics.map((c) => {
         const parameter = getParameterById(c.parameterId);
         return `${parameter?.name}: ${c.name}`
-    }).join(", ") || "";
+    }).join(", ");
 
 
     const { mutate } = useMutation({
